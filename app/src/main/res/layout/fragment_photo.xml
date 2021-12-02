@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.PhotoFragment">
+
+    <EditText
+        android:id="@+id/et_photo"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/edit_text_style"
+        android:ellipsize="end"
+        android:hint="@string/enter_url"
+        android:inputType="text"
+        android:maxLines="1"
+        android:paddingStart="15dp"
+        android:paddingEnd="50dp"
+        android:scrollHorizontally="true"
+        android:textCursorDrawable="@null"
+        app:layout_constraintBottom_toTopOf="@id/btn_photo_load"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_cancel_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/ic_cancel"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/et_photo"
+        app:layout_constraintEnd_toEndOf="@id/et_photo"
+        app:layout_constraintTop_toTopOf="@id/et_photo" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".5" />
+
+    <Button
+        android:id="@+id/btn_photo_paste_link"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/paste_link_btn_style"
+        android:fontFamily="@font/arial"
+        android:text="@string/paste_link"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/iv_photo"
+        app:layout_constraintEnd_toStartOf="@id/gl_vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_photo" />
+
+    <Button
+        android:id="@+id/btn_photo_load"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/load_btn_style"
+        android:fontFamily="@font/arial"
+        android:text="@string/load_photo"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/iv_photo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/gl_vertical"
+        app:layout_constraintTop_toBottomOf="@id/et_photo" />
+
+    <Button
+        android:id="@+id/btn_photo_download"
+        android:layout_width="0dp"
+        android:layout_height="43dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/load_btn_style"
+        android:fontFamily="@font/arial"
+        android:text="@string/download"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_photo" />
+
+    <ImageView
+        android:id="@+id/iv_photo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_photo_download"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_photo_load" />
+
+    <ProgressBar
+        android:id="@+id/pb_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/black"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/iv_photo"
+        app:layout_constraintEnd_toEndOf="@id/iv_photo"
+        app:layout_constraintStart_toStartOf="@id/iv_photo"
+        app:layout_constraintTop_toTopOf="@id/iv_photo" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
