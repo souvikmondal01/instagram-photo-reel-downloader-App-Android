@@ -1,4 +1,5 @@
 # instagram-photo-video-downloader-App-Android
+This app helps you to save photos and videos from Instagram. Also, you can see full size display pictures and followers count.
 
 ## App Icon 📱
 <img src="images/logo.png" width="80px" hspace="40">
