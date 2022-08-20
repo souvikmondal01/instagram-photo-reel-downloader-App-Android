@@ -8,5 +8,3 @@
 
 <img src="images/ss3.jpg" height="500" width="250" hspace="40"><img src="images/ss4.jpg" height="500" width="250" hspace="40">
 
-## Demonstration
-<img src="images/gif.gif" height="500" width="250" hspace="40">
