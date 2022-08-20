@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="@color/black"
+    tools:context=".activities.MainActivity">
 
     <ImageView
         android:id="@+id/action_bar"
@@ -18,9 +19,10 @@
         android:id="@+id/tv_instagram"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:elevation="4dp"
         android:fontFamily="@font/marshmello"
         android:text="Instagram"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/action_bar"
@@ -33,9 +35,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
+        android:elevation="4dp"
         android:fontFamily="@font/marshmello"
         android:text="Photo &amp; Video Downloader"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="8sp"
         app:layout_constraintBottom_toBottomOf="@id/action_bar"
         app:layout_constraintStart_toEndOf="@id/tv_instagram"
@@ -47,9 +50,11 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/black"
         app:layout_constraintStart_toStartOf="parent"
+        app:tabTextColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/action_bar"
-        app:tabIndicatorColor="@color/black" />
+        app:tabIndicatorColor="@color/white" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"

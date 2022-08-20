@@ -12,10 +12,14 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.MediaController
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -24,6 +28,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.example.instagramphotovideodownloader.MySingleton
 import com.example.instagramphotovideodownloader.R
+import kotlinx.android.synthetic.main.fragment_photo.view.*
 import kotlinx.android.synthetic.main.fragment_reel.*
 import kotlinx.android.synthetic.main.fragment_reel.view.*
 import org.json.JSONObject
@@ -31,6 +36,9 @@ import java.io.File
 
 
 class ReelFragment : Fragment() {
+    companion object {
+        private const val MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,9 +80,9 @@ class ReelFragment : Fragment() {
 
         }
 
+        showIconWhenEdittextNotEmpty(view.et_reel, view.iv_cancel_reel)
         view.iv_cancel_reel.setOnClickListener {
-            et_reel.text = null
-            iv_cancel_reel.visibility = View.INVISIBLE
+            et_reel.text.clear()
         }
         return view
     }
@@ -82,7 +90,8 @@ class ReelFragment : Fragment() {
     private fun loadReel() {
         vv_reel.visibility = View.VISIBLE
         val imageUrl = et_reel.text
-        val abc = imageUrl.substring(0, imageUrl.indexOf("?")) + "?__a=1"
+//        val abc = imageUrl.substring(0, imageUrl.indexOf("?")) + "?__a=1"
+        val abc = imageUrl.substring(0, imageUrl.indexOf("?")) + "?__a=1&__d=dis"
 
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.GET, abc, null,
@@ -199,9 +208,22 @@ class ReelFragment : Fragment() {
         }
     }
 
-    companion object {
-        private const val MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1
-    }
 
+    private fun showIconWhenEdittextNotEmpty(et: EditText, iv: ImageView) {
+        et.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (et.text.toString().isEmpty()) {
+                    iv.visibility = View.GONE
+                } else {
+                    iv.visibility = View.VISIBLE
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        })
+    }
 
 }

@@ -13,10 +13,14 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -29,6 +33,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.instagramphotovideodownloader.MySingleton
 import com.example.instagramphotovideodownloader.R
+import kotlinx.android.synthetic.main.fragment_photo.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.view.*
 import org.json.JSONObject
@@ -36,6 +41,9 @@ import java.io.File
 
 
 class ProfileFragment : Fragment() {
+    companion object {
+        private const val MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,9 +84,10 @@ class ProfileFragment : Fragment() {
                 Toast.makeText(context, "Enter valid Username !!", Toast.LENGTH_SHORT).show()
             }
         }
+        showIconWhenEdittextNotEmpty(view.et_profile, view.iv_cancel_profile)
         view.iv_cancel_profile.setOnClickListener {
-            et_profile.text = null
-            iv_cancel_profile.visibility = View.GONE
+            et_profile.text.clear()
+
         }
 
         return view
@@ -86,12 +95,15 @@ class ProfileFragment : Fragment() {
 
     private fun loadProfile() {
         pb_profile.visibility = View.VISIBLE
-        val imageUrl = et_profile.text
-        val abc = "https://www.instagram.com/" + imageUrl.toString() + "/channel/?__a=1"
+        val username = et_profile.text.trim()
+//        val abc = "https://www.instagram.com/" + imageUrl.toString() + "/channel/?__a=1"
+        val url = "https://www.instagram.com/" + username.toString() + "/?__a=1&__d=dis"
 
         val jsonObjectRequest = JsonObjectRequest(
-            Request.Method.GET, abc, null,
+            Request.Method.GET, url, null,
             { response ->
+                tv_follower_still.visibility = View.VISIBLE
+                tv_following_still.visibility = View.VISIBLE
                 val graphqlObject: JSONObject = response.getJSONObject("graphql")
                 val shortcodeMediaObject: JSONObject =
                     graphqlObject.getJSONObject("user")
@@ -132,6 +144,7 @@ class ProfileFragment : Fragment() {
 
             },
             {
+                pb_profile.visibility = View.GONE
             })
         context?.let { MySingleton.getInstance(it).addToRequestQueue(jsonObjectRequest) }
 
@@ -148,11 +161,11 @@ class ProfileFragment : Fragment() {
 
     private fun downloadProfile() {
         val fileName = "IG_profile_${System.currentTimeMillis()}"
-        val imageUrl = et_profile.text
-        val abc = "https://www.instagram.com/" + imageUrl.toString() + "/channel/?__a=1"
-
+        val username = et_profile.text
+//        val abc = "https://www.instagram.com/" + username.toString() + "/channel/?__a=1"
+        val url = "https://www.instagram.com/" + username.toString() + "/?__a=1&__d=dis"
         val jsonObjectRequest = JsonObjectRequest(
-            Request.Method.GET, abc, null,
+            Request.Method.GET, url, null,
             { response ->
                 val graphqlObject: JSONObject = response.getJSONObject("graphql")
                 val shortcodeMediaObject: JSONObject =
@@ -229,8 +242,21 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    companion object {
-        private const val MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1
+    private fun showIconWhenEdittextNotEmpty(et: EditText, iv: ImageView) {
+        et.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (et.text.toString().isEmpty()) {
+                    iv.visibility = View.GONE
+                } else {
+                    iv.visibility = View.VISIBLE
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        })
     }
 
 

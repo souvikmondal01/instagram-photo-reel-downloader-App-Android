@@ -14,10 +14,14 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -36,6 +40,9 @@ import org.json.JSONObject
 import java.io.File
 
 class PhotoFragment : Fragment() {
+    companion object {
+        private const val MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,9 +68,10 @@ class PhotoFragment : Fragment() {
 
             }
         }
+
+        showIconWhenEdittextNotEmpty(view.et_photo, view.iv_cancel_photo)
         view.iv_cancel_photo.setOnClickListener {
-            et_photo.text = null
-            iv_cancel_photo.visibility = View.GONE
+            et_photo.text.clear()
         }
 
         view.btn_photo_download.setOnClickListener {
@@ -87,7 +95,7 @@ class PhotoFragment : Fragment() {
         pb_photo.visibility = View.VISIBLE
 
         val imageUrl = et_photo.text
-        val abc = imageUrl.substring(0, imageUrl.indexOf("?")) + "?__a=1"
+        val abc = imageUrl.substring(0, imageUrl.indexOf("?")) + "?__a=1&__d=dis"
 
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.GET, abc, null,
@@ -167,7 +175,6 @@ class PhotoFragment : Fragment() {
                 } catch (e: Exception) {
                     Toast.makeText(context, "Download Fail", Toast.LENGTH_SHORT).show()
                 }
-
             },
             {
             })
@@ -216,8 +223,22 @@ class PhotoFragment : Fragment() {
         }
     }
 
-    companion object {
-        private const val MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1
+
+    private fun showIconWhenEdittextNotEmpty(et: EditText, iv: ImageView) {
+        et.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (et.text.toString().isEmpty()) {
+                    iv.visibility = View.GONE
+                } else {
+                    iv.visibility = View.VISIBLE
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        })
     }
 
 }
