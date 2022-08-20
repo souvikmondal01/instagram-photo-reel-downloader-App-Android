@@ -167,7 +167,6 @@ class PhotoFragment : Fragment() {
                 } catch (e: Exception) {
                     Toast.makeText(context, "Download Fail", Toast.LENGTH_SHORT).show()
                 }
-
             },
             {
             })
