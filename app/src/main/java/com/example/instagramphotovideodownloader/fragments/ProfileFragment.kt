@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
@@ -32,10 +33,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.instagramphotovideodownloader.MySingleton
-import com.example.instagramphotovideodownloader.R
-import kotlinx.android.synthetic.main.fragment_photo.view.*
-import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.fragment_profile.view.*
+import com.example.instagramphotovideodownloader.databinding.FragmentProfileBinding
 import org.json.JSONObject
 import java.io.File
 
@@ -45,38 +43,44 @@ class ProfileFragment : Fragment() {
         private const val MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1
     }
 
+    private lateinit var binding: FragmentProfileBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_profile, container, false)
+        binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-        view.btn_profile_load.setOnClickListener {
+        binding.btnProfileLoad.setOnClickListener {
+            binding.ivProfile.setImageResource(0)
             try {
-                if (view.et_profile.text?.isNotEmpty() == true) {
+                if (binding.etProfile.text?.isNotEmpty() == true) {
                     loadProfile()
+                    closeKeyBoard()
                 }
             } catch (s: Exception) {
                 Toast.makeText(context, "Enter valid Link !!", Toast.LENGTH_SHORT).show()
             }
         }
 
-        view.btn_profile_paste_link.setOnClickListener {
+        binding.btnProfilePasteLink.setOnClickListener {
             try {
-                iv_cancel_profile.visibility = View.VISIBLE
+                binding.ivCancelProfile.visibility = View.VISIBLE
                 pasteLink()
                 loadProfile()
+                closeKeyBoard()
             } catch (e: Exception) {
 
             }
+
         }
 
-        view.btn_profile_download.setOnClickListener {
+        binding.btnProfileDownload.setOnClickListener {
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     askPermissions()
                 } else {
-                    if (view.et_profile.text.isNotEmpty())
+                    if (binding.etProfile.text.isNotEmpty())
                         loadProfile()
                     downloadProfile()
                 }
@@ -84,26 +88,26 @@ class ProfileFragment : Fragment() {
                 Toast.makeText(context, "Enter valid Username !!", Toast.LENGTH_SHORT).show()
             }
         }
-        showIconWhenEdittextNotEmpty(view.et_profile, view.iv_cancel_profile)
-        view.iv_cancel_profile.setOnClickListener {
-            et_profile.text.clear()
+        showIconWhenEdittextNotEmpty(binding.etProfile, binding.ivCancelProfile)
+        binding.ivCancelProfile.setOnClickListener {
+            binding.etProfile.text.clear()
 
         }
 
-        return view
+        return binding.root
     }
 
     private fun loadProfile() {
-        pb_profile.visibility = View.VISIBLE
-        val username = et_profile.text.trim()
+        binding.pbProfile.visibility = View.VISIBLE
+        val username = binding.etProfile.text.trim()
 //        val abc = "https://www.instagram.com/" + imageUrl.toString() + "/channel/?__a=1"
         val url = "https://www.instagram.com/" + username.toString() + "/?__a=1&__d=dis"
 
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.GET, url, null,
             { response ->
-                tv_follower_still.visibility = View.VISIBLE
-                tv_following_still.visibility = View.VISIBLE
+                binding.tvFollowerStill.visibility = View.VISIBLE
+                binding.tvFollowingStill.visibility = View.VISIBLE
                 val graphqlObject: JSONObject = response.getJSONObject("graphql")
                 val shortcodeMediaObject: JSONObject =
                     graphqlObject.getJSONObject("user")
@@ -112,8 +116,8 @@ class ProfileFragment : Fragment() {
                 val follower = edgeFollowedByObject.getInt("count")
                 val following = edgeFollowObject.getInt("count")
 
-                tv_follower_count.text = follower.toString()
-                tv_following_count.text = following.toString()
+                binding.tvFollowerCount.text = follower.toString()
+                binding.tvFollowingCount.text = following.toString()
                 val profilePhoto = shortcodeMediaObject.getString("profile_pic_url_hd")
 
                 Glide.with(this).load(profilePhoto)
@@ -125,7 +129,7 @@ class ProfileFragment : Fragment() {
                             target: Target<Drawable>?,
                             isFirstResource: Boolean
                         ): Boolean {
-                            pb_profile.visibility = View.GONE
+                            binding.pbProfile.visibility = View.GONE
                             return false
                         }
 
@@ -136,15 +140,15 @@ class ProfileFragment : Fragment() {
                             dataSource: DataSource?,
                             isFirstResource: Boolean
                         ): Boolean {
-                            pb_profile.visibility = View.GONE
+                            binding.pbProfile.visibility = View.GONE
                             return false
                         }
 
-                    }).into(iv_profile)
+                    }).into(binding.ivProfile)
 
             },
             {
-                pb_profile.visibility = View.GONE
+                binding.pbProfile.visibility = View.GONE
             })
         context?.let { MySingleton.getInstance(it).addToRequestQueue(jsonObjectRequest) }
 
@@ -155,13 +159,13 @@ class ProfileFragment : Fragment() {
         val clipboard: ClipboardManager? =
             requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
         if (clipboard?.hasPrimaryClip() == true) {
-            et_profile.setText(clipboard.primaryClip?.getItemAt(0)?.text.toString())
+            binding.etProfile.setText(clipboard.primaryClip?.getItemAt(0)?.text.toString())
         }
     }
 
     private fun downloadProfile() {
         val fileName = "IG_profile_${System.currentTimeMillis()}"
-        val username = et_profile.text
+        val username = binding.etProfile.text
 //        val abc = "https://www.instagram.com/" + username.toString() + "/channel/?__a=1"
         val url = "https://www.instagram.com/" + username.toString() + "/?__a=1&__d=dis"
         val jsonObjectRequest = JsonObjectRequest(
@@ -259,5 +263,13 @@ class ProfileFragment : Fragment() {
         })
     }
 
+    private fun closeKeyBoard() {
+        val view = requireActivity().currentFocus
+        if (view != null) {
+            val imm =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
 
 }

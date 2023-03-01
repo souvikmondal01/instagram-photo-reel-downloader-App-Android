@@ -6,11 +6,10 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.example.instagramphotovideodownloader.fragments.PhotoFragment
 import com.example.instagramphotovideodownloader.fragments.ProfileFragment
 import com.example.instagramphotovideodownloader.fragments.ReelFragment
-import com.example.instagramphotovideodownloader.fragments.VideoFragment
 
 class ViewpagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getCount(): Int {
-        return 4
+        return 3
     }
 
     override fun getItem(position: Int): Fragment {
@@ -22,9 +21,6 @@ class ViewpagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
                 ReelFragment()
             }
             2 -> {
-                VideoFragment()
-            }
-            3 -> {
                 ProfileFragment()
             }
 
@@ -44,9 +40,6 @@ class ViewpagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
                 return "Reel"
             }
             2 -> {
-                return "Video"
-            }
-            3 -> {
                 return "Profile"
             }
 

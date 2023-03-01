@@ -6,7 +6,7 @@
     <string name="enter_url">Enter url</string>
     <string name="load_reel">Load Reel</string>
     <string name="load_video">Load Video</string>
-    <string name="enter_username">Enter Username</string>
+    <string name="enter_username">Enter username</string>
     <string name="paste_username">Paste Username</string>
     <string name="load_profile">Load Profile</string>
 </resources>

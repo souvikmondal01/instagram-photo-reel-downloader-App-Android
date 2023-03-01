@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.MediaController
@@ -27,10 +28,7 @@ import androidx.core.content.ContextCompat
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.example.instagramphotovideodownloader.MySingleton
-import com.example.instagramphotovideodownloader.R
-import kotlinx.android.synthetic.main.fragment_photo.view.*
-import kotlinx.android.synthetic.main.fragment_reel.*
-import kotlinx.android.synthetic.main.fragment_reel.view.*
+import com.example.instagramphotovideodownloader.databinding.FragmentReelBinding
 import org.json.JSONObject
 import java.io.File
 
@@ -40,37 +38,42 @@ class ReelFragment : Fragment() {
         private const val MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1
     }
 
+    private lateinit var binding: FragmentReelBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_reel, container, false)
-        view.btn_reel_load.setOnClickListener {
+        binding = FragmentReelBinding.inflate(inflater, container, false)
+
+        binding.btnReelDownload.setOnClickListener {
             try {
-                if (view.et_reel.text.isNotEmpty()) {
+                if (binding.etReel.text.isNotEmpty()) {
                     loadReel()
+                    closeKeyBoard()
                 }
             } catch (s: Exception) {
                 Toast.makeText(context, "Enter valid Link !!", Toast.LENGTH_SHORT).show()
             }
         }
 
-        view.btn_reel_paste_link.setOnClickListener {
+        binding.btnReelPasteLink.setOnClickListener {
             try {
-                iv_cancel_reel.visibility = View.VISIBLE
+                binding.ivCancelReel.visibility = View.VISIBLE
                 pasteLink()
                 loadReel()
+                closeKeyBoard()
 
             } catch (e: Exception) {
-
+                Toast.makeText(context, e.message.toString(), Toast.LENGTH_SHORT).show()
             }
         }
-        view.btn_reel_download.setOnClickListener {
+        binding.btnReelDownload.setOnClickListener {
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     askPermissions()
                 } else {
-                    if (view.et_reel.text.isNotEmpty())
+                    if (binding.etReel.text.isNotEmpty())
                         loadReel()
                     downloadReel()
                 }
@@ -80,16 +83,17 @@ class ReelFragment : Fragment() {
 
         }
 
-        showIconWhenEdittextNotEmpty(view.et_reel, view.iv_cancel_reel)
-        view.iv_cancel_reel.setOnClickListener {
-            et_reel.text.clear()
+        showIconWhenEdittextNotEmpty(binding.etReel, binding.ivCancelReel)
+
+        binding.ivCancelReel.setOnClickListener {
+            binding.etReel.text.clear()
         }
-        return view
+        return binding.root
     }
 
     private fun loadReel() {
-        vv_reel.visibility = View.VISIBLE
-        val imageUrl = et_reel.text
+        binding.vvReel.visibility = View.VISIBLE
+        val imageUrl = binding.etReel.text
 //        val abc = imageUrl.substring(0, imageUrl.indexOf("?")) + "?__a=1"
         val abc = imageUrl.substring(0, imageUrl.indexOf("?")) + "?__a=1&__d=dis"
 
@@ -102,14 +106,14 @@ class ReelFragment : Fragment() {
                 val nameValue = shortcodeMediaObject.getString("video_url")
 
                 val mediaController = MediaController(context)
-                mediaController.setAnchorView(vv_reel)
+                mediaController.setAnchorView(binding.vvReel)
 
                 val onlineUri: Uri = Uri.parse(nameValue)
 
-                vv_reel.setMediaController(mediaController)
-                vv_reel.setVideoURI(onlineUri)
-                vv_reel.requestFocus()
-                vv_reel.start()
+                binding.vvReel.setMediaController(mediaController)
+                binding.vvReel.setVideoURI(onlineUri)
+                binding.vvReel.requestFocus()
+                binding.vvReel.start()
 
             },
             {
@@ -122,14 +126,14 @@ class ReelFragment : Fragment() {
         val clipboard: ClipboardManager? =
             requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
         if (clipboard?.hasPrimaryClip() == true) {
-            et_reel.setText(clipboard.primaryClip?.getItemAt(0)?.text.toString())
+            binding.etReel.setText(clipboard.primaryClip?.getItemAt(0)?.text.toString())
         }
     }
 
     private fun downloadReel() {
         val fileName = "IG_reel_${System.currentTimeMillis()}"
-        val imageUrl = et_reel.text
-        val abc = imageUrl.substring(0, imageUrl.indexOf("?")) + "?__a=1"
+        val imageUrl = binding.etReel.text
+        val abc = imageUrl.substring(0, imageUrl.indexOf("?")) + "?__a=1&__d=dis"
 
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.GET, abc, null,
@@ -226,4 +230,12 @@ class ReelFragment : Fragment() {
         })
     }
 
+    private fun closeKeyBoard() {
+        val view = requireActivity().currentFocus
+        if (view != null) {
+            val imm =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
 }
