@@ -12,7 +12,7 @@
         <item name="editTextBackground">@color/black_27</item>
         <item name="buttonTint">@color/black_bg</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="m">?attr/colorSecondaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="m">?attr/colorOnSecondary</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <!-- Customize your theme here. -->
     </style>

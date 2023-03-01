@@ -5,8 +5,6 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DownloadManager
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Context.DOWNLOAD_SERVICE
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
@@ -14,14 +12,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -35,6 +28,9 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.instagramphotovideodownloader.MySingleton
 import com.example.instagramphotovideodownloader.databinding.FragmentPhotoBinding
+import com.example.instagramphotovideodownloader.utilities.Utility.closeKeyBoard
+import com.example.instagramphotovideodownloader.utilities.Utility.edittextClear
+import com.example.instagramphotovideodownloader.utilities.Utility.pasteLink
 import org.json.JSONObject
 import java.io.File
 
@@ -56,7 +52,7 @@ class PhotoFragment : Fragment() {
             try {
                 if (binding.etPhoto.text.isNotEmpty()) {
                     loadPhoto()
-                    closeKeyBoard()
+                    closeKeyBoard(requireActivity())
                 }
 
             } catch (s: Exception) {
@@ -68,19 +64,16 @@ class PhotoFragment : Fragment() {
             binding.ivPhoto.setImageResource(0)
             try {
                 binding.ivCancelPhoto.visibility = View.VISIBLE
-                pasteLink()
+                pasteLink(requireContext(), binding.etPhoto)
                 loadPhoto()
-                closeKeyBoard()
+                closeKeyBoard(requireActivity())
             } catch (e: Exception) {
                 Toast.makeText(context, e.message.toString(), Toast.LENGTH_SHORT).show()
             }
         }
 
-        showIconWhenEdittextNotEmpty(binding.etPhoto, binding.ivCancelPhoto)
+        edittextClear(binding.etPhoto, binding.ivCancelPhoto)
 
-        binding.ivCancelPhoto.setOnClickListener {
-            binding.etPhoto.text.clear()
-        }
 
         binding.btnPhotoDownload.setOnClickListener {
             try {
@@ -141,14 +134,6 @@ class PhotoFragment : Fragment() {
             {
             })
         context?.let { MySingleton.getInstance(it).addToRequestQueue(jsonObjectRequest) }
-    }
-
-    private fun pasteLink() {
-        val clipboard: ClipboardManager? =
-            requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-        if (clipboard?.hasPrimaryClip() == true) {
-            binding.etPhoto.setText(clipboard.primaryClip?.getItemAt(0)?.text.toString())
-        }
     }
 
     private fun downloadImage() {
@@ -231,30 +216,4 @@ class PhotoFragment : Fragment() {
         }
     }
 
-
-    private fun showIconWhenEdittextNotEmpty(et: EditText, iv: ImageView) {
-        et.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (et.text.toString().isEmpty()) {
-                    iv.visibility = View.GONE
-                } else {
-                    iv.visibility = View.VISIBLE
-                }
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-        })
-    }
-
-    private fun closeKeyBoard() {
-        val view = requireActivity().currentFocus
-        if (view != null) {
-            val imm =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
-        }
-    }
 }

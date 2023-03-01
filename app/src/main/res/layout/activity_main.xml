@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorPrimary"
     tools:context=".activities.MainActivity">
 
     <ImageView
@@ -18,6 +19,7 @@
         android:id="@+id/tv_instagram"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:elevation="4dp"
         android:fontFamily="@font/marshmello"
         android:text="Instagram"
@@ -25,8 +27,6 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/action_bar"
-        app:layout_constraintEnd_toEndOf="@id/action_bar"
-        app:layout_constraintHorizontal_bias=".04"
         app:layout_constraintStart_toStartOf="@id/action_bar"
         app:layout_constraintTop_toTopOf="@id/action_bar" />
 
@@ -48,12 +48,13 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:tabTextAppearance="@style/TabTextAppearance"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/action_bar"
         app:tabIndicatorColor="?attr/colorSecondary"
         app:tabSelectedTextColor="?attr/colorSecondary" />
-
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
@@ -63,6 +64,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tab_layout" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

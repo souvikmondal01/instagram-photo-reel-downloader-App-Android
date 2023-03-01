@@ -29,6 +29,9 @@ import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.example.instagramphotovideodownloader.MySingleton
 import com.example.instagramphotovideodownloader.databinding.FragmentReelBinding
+import com.example.instagramphotovideodownloader.utilities.Utility.closeKeyBoard
+import com.example.instagramphotovideodownloader.utilities.Utility.edittextClear
+import com.example.instagramphotovideodownloader.utilities.Utility.pasteLink
 import org.json.JSONObject
 import java.io.File
 
@@ -50,7 +53,7 @@ class ReelFragment : Fragment() {
             try {
                 if (binding.etReel.text.isNotEmpty()) {
                     loadReel()
-                    closeKeyBoard()
+                    closeKeyBoard(requireActivity())
                 }
             } catch (s: Exception) {
                 Toast.makeText(context, "Enter valid Link !!", Toast.LENGTH_SHORT).show()
@@ -60,9 +63,9 @@ class ReelFragment : Fragment() {
         binding.btnReelPasteLink.setOnClickListener {
             try {
                 binding.ivCancelReel.visibility = View.VISIBLE
-                pasteLink()
+                pasteLink(requireContext(), binding.etReel)
                 loadReel()
-                closeKeyBoard()
+                closeKeyBoard(requireActivity())
 
             } catch (e: Exception) {
                 Toast.makeText(context, e.message.toString(), Toast.LENGTH_SHORT).show()
@@ -83,11 +86,8 @@ class ReelFragment : Fragment() {
 
         }
 
-        showIconWhenEdittextNotEmpty(binding.etReel, binding.ivCancelReel)
+        edittextClear(binding.etReel, binding.ivCancelReel)
 
-        binding.ivCancelReel.setOnClickListener {
-            binding.etReel.text.clear()
-        }
         return binding.root
     }
 
@@ -122,13 +122,6 @@ class ReelFragment : Fragment() {
 
     }
 
-    private fun pasteLink() {
-        val clipboard: ClipboardManager? =
-            requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-        if (clipboard?.hasPrimaryClip() == true) {
-            binding.etReel.setText(clipboard.primaryClip?.getItemAt(0)?.text.toString())
-        }
-    }
 
     private fun downloadReel() {
         val fileName = "IG_reel_${System.currentTimeMillis()}"
@@ -213,29 +206,4 @@ class ReelFragment : Fragment() {
     }
 
 
-    private fun showIconWhenEdittextNotEmpty(et: EditText, iv: ImageView) {
-        et.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (et.text.toString().isEmpty()) {
-                    iv.visibility = View.GONE
-                } else {
-                    iv.visibility = View.VISIBLE
-                }
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-        })
-    }
-
-    private fun closeKeyBoard() {
-        val view = requireActivity().currentFocus
-        if (view != null) {
-            val imm =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
-        }
-    }
 }
