@@ -1,4 +1,4 @@
-# instagram-photo-video-downloader-App-Android
+# Instagram Photo Reel Downloader App
 This app helps you to save photos and videos from Instagram. Also, you can see full size display pictures and followers count.
 ## Built With 🛠
 * [Kotlin] - First class and official programming language for Android development.
